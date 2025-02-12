@@ -33,11 +33,11 @@ use super::{
     code_action::{
         code_action_add_missing_patterns, code_action_convert_qualified_constructor_to_unqualified,
         code_action_convert_unqualified_constructor_to_qualified, code_action_import_module,
-        code_action_inexhaustive_let_to_case, AddAnnotations, CodeActionBuilder,
-        ConvertToFunctionCall, DesugarUse, ExpandFunctionCapture, ExtractConstant, ExtractVariable,
-        FillInMissingLabelledArgs, GenerateDynamicDecoder, GenerateFunction, GenerateJsonEncoder,
-        LetAssertToCase, PatternMatchOnValue, RedundantTupleInCaseSubject, TurnIntoUse,
-        UseLabelShorthandSyntax,
+        code_action_inexhaustive_let_to_case, AddAnnotations, CodeActionBuilder, ConvertFromUse,
+        ConvertToFunctionCall, ConvertToUse, ExpandFunctionCapture, ExtractConstant,
+        ExtractVariable, FillInMissingLabelledArgs, GenerateDynamicDecoder, GenerateFunction,
+        GenerateJsonEncoder, InlineVariable, LetAssertToCase, PatternMatchOnValue,
+        RedundantTupleInCaseSubject, UseLabelShorthandSyntax,
     },
     completer::Completer,
     rename::{rename_local_variable, VariableRenameKind},
@@ -334,8 +334,8 @@ where
                 .extend(RedundantTupleInCaseSubject::new(module, &lines, &params).code_actions());
             actions.extend(UseLabelShorthandSyntax::new(module, &lines, &params).code_actions());
             actions.extend(FillInMissingLabelledArgs::new(module, &lines, &params).code_actions());
-            actions.extend(DesugarUse::new(module, &lines, &params).code_actions());
-            actions.extend(TurnIntoUse::new(module, &lines, &params).code_actions());
+            actions.extend(ConvertFromUse::new(module, &lines, &params).code_actions());
+            actions.extend(ConvertToUse::new(module, &lines, &params).code_actions());
             actions.extend(ExpandFunctionCapture::new(module, &lines, &params).code_actions());
             actions.extend(ExtractVariable::new(module, &lines, &params).code_actions());
             actions.extend(ExtractConstant::new(module, &lines, &params).code_actions());
@@ -344,6 +344,7 @@ where
             actions.extend(
                 PatternMatchOnValue::new(module, &lines, &params, &this.compiler).code_actions(),
             );
+            actions.extend(InlineVariable::new(module, &lines, &params).code_actions());
             GenerateDynamicDecoder::new(module, &lines, &params, &mut actions).code_actions();
             GenerateJsonEncoder::new(module, &lines, &params, &mut actions).code_actions();
             AddAnnotations::new(module, &lines, &params).code_action(&mut actions);

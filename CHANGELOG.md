@@ -70,6 +70,30 @@
 
   ([Surya Rose](https://github.com/GearsDatapacks))
 
+- The Language Server now suggests a code action to inline a variable
+  which is only used once. For example, this code:
+
+  ```gleam
+  import gleam/io
+
+  pub fn main() {
+    let greeting = "Hello!"
+    io.println(greeting)
+  }
+  ```
+
+  Will be rewritten as:
+
+  ```gleam
+  import gleam/io
+
+  pub fn main() {
+    io.println("Hello!")
+  }
+  ```
+
+  ([Surya Rose](https://github.com/GearsDatapacks))
+
 - The language server now offers the option to turn a variable value into a
   const declaration. This will work as long as the value is a literal or a tuple
   or list of literals. Values inside tuples or lists also work. For example, in
